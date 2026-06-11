@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astral — Commercial Space Travel</title>
+  <meta name="description" content="A cinematic space-travel landing page for premium commercial orbital voyages." />
+  <meta property="og:title" content="Astral — Commercial Space Travel" />
+  <meta property="og:description" content="Step into a cinematic mission briefing for the future of private orbital travel." />
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind = {
+      config: {
+        theme: {
+          extend: {
+            fontFamily: {
+              heading: ['Instrument Serif', 'serif'],
+              body: ['Barlow', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '9999px',
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script crossorigin src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: #000; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: #000;
+      color: #fff;
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    ::selection { background: rgba(255,255,255,.22); color: #fff; }
+
+    .liquid-glass,
+    .liquid-glass-strong {
+      position: relative;
+      isolation: isolate;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.17),
+        0 18px 55px rgba(0,0,0,.32);
+      overflow: hidden;
+    }
+
+    .liquid-glass {
+      -webkit-backdrop-filter: blur(4px) saturate(120%);
+      backdrop-filter: blur(4px) saturate(120%);
+    }
+
+    .liquid-glass-strong {
+      background: rgba(255,255,255,0.10);
+      -webkit-backdrop-filter: blur(50px) saturate(140%);
+      backdrop-filter: blur(50px) saturate(140%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.22),
+        inset 0 -1px 0 rgba(255,255,255,.07),
+        0 24px 80px rgba(0,0,0,.55);
+    }
+
+    .liquid-glass::before,
+    .liquid-glass-strong::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,.55),
+        rgba(255,255,255,.10) 34%,
+        rgba(255,255,255,.06) 62%,
+        rgba(255,255,255,.38)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      /* Spec fallback for browsers that use the newer compositing keywords. */
+      mask-mode: match-source;
+      pointer-events: none;
+    }
+
+    .space-fallback {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.24) 0 1px, transparent 2px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.18) 0 1px, transparent 2px),
+        radial-gradient(circle at 65% 70%, rgba(255,255,255,.16) 0 1px, transparent 2px),
+        radial-gradient(circle at 35% 80%, rgba(255,255,255,.13) 0 1px, transparent 2px),
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,.055), transparent 33%),
+        #000;
+      background-size: 220px 220px, 310px 310px, 260px 260px, 420px 420px, 100% 100%, 100% 100%;
+      animation: starDrift 42s linear infinite;
+    }
+
+    @keyframes starDrift {
+      from { background-position: 0 0, 0 0, 0 0, 0 0, center, center; }
+      to { background-position: 220px 220px, -310px 310px, 260px -260px, -420px -420px, center, center; }
+    }
+
+    .video-vignette::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 36%, transparent 0 30%, rgba(0,0,0,.45) 62%, rgba(0,0,0,.92) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,.50), transparent 25%, transparent 60%, rgba(0,0,0,.92));
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @media (max-width: 768px) {
+      .hero-video-size { width: 100% !important; height: 100% !important; }
+    }
+
+    /* Offline/no-network fallback for Arena preview when CDN scripts are unavailable. */
+    .static-fallback {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,.12), transparent 28%),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.20) 0 1px, transparent 2px),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,.16) 0 1px, transparent 2px),
+        #000;
+      color: #fff;
+      font-family: 'Barlow', system-ui, sans-serif;
+      padding: 24px;
+    }
+    .static-fallback__nav { display:flex; align-items:center; justify-content:space-between; max-width:1180px; margin:0 auto; }
+    .static-fallback__logo { width:48px; height:48px; border-radius:999px; border:1px solid rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-size:32px; background:rgba(255,255,255,.07); }
+    .static-fallback__hero { min-height:calc(100vh - 96px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; max-width:1080px; margin:0 auto; }
+    .static-fallback__badge, .static-fallback__pill { border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.07); border-radius:999px; padding:10px 16px; text-transform:uppercase; letter-spacing:.22em; font-size:12px; }
+    .static-fallback h1 { font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-size:clamp(4rem,10vw,8rem); line-height:.82; letter-spacing:-.055em; margin:30px 0 22px; max-width:980px; }
+    .static-fallback p { color:rgba(255,255,255,.84); max-width:640px; font-weight:300; line-height:1.35; }
+    .static-fallback__actions { margin-top:32px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+    .static-fallback__pill--strong { background:rgba(255,255,255,.14); box-shadow:0 20px 60px rgba(0,0,0,.5); }
+    .static-fallback__cards { margin-top:44px; display:grid; grid-template-columns:repeat(2,minmax(0,220px)); gap:16px; }
+    .static-fallback__card { border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); border-radius:20px; padding:20px; text-align:left; }
+    .static-fallback__metric { font-family:'Instrument Serif', Georgia, serif; font-style:italic; font-size:40px; line-height:1; }
+    .static-fallback__label { margin-top:10px; color:rgba(255,255,255,.7); text-transform:uppercase; letter-spacing:.16em; font-size:11px; }
+    @media (max-width:640px){ .static-fallback__cards{grid-template-columns:1fr;} .static-fallback{padding:18px;} }
+
+  </style>
+</head>
+<body>
+
+  <div id="static-fallback" class="static-fallback">
+    <div class="static-fallback__nav">
+      <div class="static-fallback__logo">a</div>
+      <div class="static-fallback__badge">Cinematic preview</div>
+      <div style="width:48px"></div>
+    </div>
+    <section class="static-fallback__hero">
+      <div class="static-fallback__badge">Mission window now open</div>
+      <h1>Commercial orbit for the impossibly curious</h1>
+      <p>A private spaceflight experience shaped like a mission briefing: precise training, orbital comfort, and cinematic views of home from above the atmosphere.</p>
+      <div class="static-fallback__actions">
+        <div class="static-fallback__pill static-fallback__pill--strong">Start Your Voyage ↗</div>
+        <div class="static-fallback__pill">View Liftoff ▶</div>
+      </div>
+      <div class="static-fallback__cards">
+        <div class="static-fallback__card"><div class="static-fallback__metric">17</div><div class="static-fallback__label">Orbital Days</div></div>
+        <div class="static-fallback__card"><div class="static-fallback__metric">99.8%</div><div class="static-fallback__label">Flight Reliability</div></div>
+      </div>
+    </section>
+  </div>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      const first = String(args[0] || '');
+      if (first.includes('React does not recognize') || first.includes('Invalid DOM property')) return;
+      originalConsoleError(...args);
+    };
+
+    const { useEffect, useRef, useState } = React;
+    const fm = window.Motion || window.FramerMotion || window.motion || {};
+    const motion = fm.motion || new Proxy({}, { get: () => (props) => React.createElement('div', props, props.children) });
+
+    const HERO_VIDEO = 'https://videos.pexels.com/video-files/1851190/1851190-hd_1920_1080_25fps.mp4';
+    const CAP_VIDEO = 'https://videos.pexels.com/video-files/856401/856401-hd_1920_1080_30fps.mp4';
+
+    const fadeUp = (delay = 0) => ({
+      initial: { opacity: 0, y: 28, filter: 'blur(12px)' },
+      animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+      transition: { duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }
+    });
+
+    function ArrowUpRight({ className = 'w-4 h-4' }) {
+      return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>;
+    }
+
+    function PlayIcon({ className = 'w-4 h-4' }) {
+      return <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72c0 .76.82 1.23 1.48.85l11.09-6.86a1 1 0 0 0 0-1.7L9.48 4.29A.98.98 0 0 0 8 5.14Z"/></svg>;
+    }
+
+    function Icon({ type = 'orbit', className = 'w-5 h-5' }) {
+      const paths = {
+        orbit: <><circle cx="12" cy="12" r="2.3"/><path d="M3.5 12c0-2.2 3.8-4 8.5-4s8.5 1.8 8.5 4-3.8 4-8.5 4-8.5-1.8-8.5-4Z"/><path d="M7.1 5.7c1.9-1.1 5.3 1.1 7.7 5.2 2.3 4 2.8 8 .9 9.1-1.9 1.1-5.3-1.1-7.7-5.2-2.3-4-2.8-8-.9-9.1Z"/></>,
+        shield: <path d="M12 3.3 19 6v5.4c0 4.4-2.9 8.4-7 9.6-4.1-1.2-7-5.2-7-9.6V6l7-2.7Z"/>,
+        signal: <><path d="M5 17.5h.01"/><path d="M8.5 14a5 5 0 0 1 7 0"/><path d="M4.9 10.4a10 10 0 0 1 14.2 0"/><path d="M2 7.5a14.1 14.1 0 0 1 20 0"/></>,
+        capsule: <path d="M7.4 16.6c-3.1-3.1-3.5-7.8-.9-10.4s7.3-2.2 10.4.9 3.5 7.8.9 10.4-7.3 2.2-10.4-.9Zm1.8-1.8c2.1 2.1 5.2 2.5 6.8.9s1.2-4.7-.9-6.8-5.2-2.5-6.8-.9-1.2 4.7.9 6.8Z"/>,
+        terrain: <><path d="M3 18.5 9 8l4 7 2-3.5 6 7H3Z"/><path d="M14 6.5h.01"/></>,
+        rocket: <><path d="M13.5 4.5c2.7-.6 4.8-.1 6 1.1 1.2 1.2 1.7 3.3 1.1 6l-5.7 5.7-4.2-4.2 2.8-8.6Z"/><path d="m10.7 13.1-4.4.8-2.6 2.6 3.8.1.1 3.8 2.6-2.6.8-4.4"/><path d="M16.8 7.2h.01"/></>
+      };
+      return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type]}</svg>;
+    }
+
+    window.FadingVideo = function FadingVideo({ src, className = '', style = {}, poster = '' }) {
+      const videoRef = useRef(null);
+      const rafRef = useRef(null);
+      const timeoutRef = useRef(null);
+      const fadingOutRef = useRef(false);
+      const [failed, setFailed] = useState(false);
+
+      useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+        const FADE_MS = 500;
+        const FADE_OUT_LEAD = 0.55;
+
+        const cancelFade = () => {
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        };
+
+        const fadeTo = (targetOpacity, durationMs = FADE_MS) => {
+          cancelFade();
+          const startOpacity = Number.parseFloat(video.style.opacity || '0') || 0;
+          const start = performance.now();
+          const tick = (now) => {
+            const t = Math.min(1, (now - start) / durationMs);
+            const eased = 1 - Math.pow(1 - t, 3);
+            video.style.opacity = String(startOpacity + (targetOpacity - startOpacity) * eased);
+            if (t < 1) rafRef.current = requestAnimationFrame(tick);
+          };
+          rafRef.current = requestAnimationFrame(tick);
+        };
+
+        const onLoadedData = () => {
+          video.style.opacity = '0';
+          const playPromise = video.play();
+          if (playPromise && playPromise.catch) playPromise.catch(() => setFailed(true));
+          fadeTo(1);
+        };
+
+        const onTimeUpdate = () => {
+          if (!video.duration || Number.isNaN(video.duration)) return;
+          const remaining = video.duration - video.currentTime;
+          if (!fadingOutRef.current && remaining <= FADE_OUT_LEAD) {
+            fadingOutRef.current = true;
+            fadeTo(0);
+          }
+        };
+
+        const onEnded = () => {
+          cancelFade();
+          video.style.opacity = '0';
+          timeoutRef.current = setTimeout(() => {
+            video.currentTime = 0;
+            fadingOutRef.current = false;
+            const playPromise = video.play();
+            if (playPromise && playPromise.catch) playPromise.catch(() => setFailed(true));
+            fadeTo(1);
+          }, 100);
+        };
+
+        const onError = () => setFailed(true);
+
+        video.addEventListener('loadeddata', onLoadedData);
+        video.addEventListener('timeupdate', onTimeUpdate);
+        video.addEventListener('ended', onEnded);
+        video.addEventListener('error', onError);
+
+        return () => {
+          video.removeEventListener('loadeddata', onLoadedData);
+          video.removeEventListener('timeupdate', onTimeUpdate);
+          video.removeEventListener('ended', onEnded);
+          video.removeEventListener('error', onError);
+          cancelFade();
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+      }, [src]);
+
+      return <>
+        <div className={`absolute inset-0 z-0 space-fallback ${failed ? 'opacity-100' : 'opacity-70'}`} />
+        <video
+          ref={videoRef}
+          src={src}
+          poster={poster}
+          className={className}
+          style={{ ...style, opacity: 0 }}
+          muted
+          playsInline
+          autoPlay
+          preload="auto"
+        />
+      </>;
+    };
+
+    window.BlurText = function BlurText({ text, className = '' }) {
+      const ref = useRef(null);
+      const [visible, setVisible] = useState(false);
+      useEffect(() => {
+        const node = ref.current;
+        if (!node) return;
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        }, { threshold: 0.1 });
+        observer.observe(node);
+        return () => observer.disconnect();
+      }, []);
+
+      return <div ref={ref} className={className} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', rowGap: '0.1em', perspective: '900px', transformStyle: 'preserve-3d' }}>
+        {text.split(' ').map((word, i) => <motion.span
+          key={`${word}-${i}`}
+          style={{ display: 'inline-block', marginRight: '0.28em' }}
+          initial={{ filter: 'blur(10px)', opacity: 0, y: 50 }}
+          animate={visible ? { filter: ['blur(10px)', 'blur(5px)', 'blur(0px)'], opacity: [0, 0.5, 1], y: [50, -5, 0], scale: [0.98, 1.01, 1] } : {}}
+          transition={{ duration: 0.7, delay: i * 0.1, times: [0, 0.5, 1], ease: 'easeOut' }}
+        >{word}</motion.span>)}
+      </div>;
+    };
+
+    window.Navbar = function Navbar() {
+      const links = ['Fleet', 'Orbit', 'Safety', 'Training', 'Manifest'];
+      return <nav className="fixed top-4 left-0 right-0 z-50 px-5 md:px-8 lg:px-16 flex items-center justify-between pointer-events-none">
+        <a href="#hero" className="pointer-events-auto liquid-glass w-12 h-12 rounded flex items-center justify-center font-heading italic text-3xl leading-none" aria-label="Astral home">a</a>
+        <div className="hidden md:flex pointer-events-auto liquid-glass rounded items-center gap-1 p-1 text-[11px] uppercase tracking-[0.18em] font-body font-medium text-white/80">
+          {links.map(link => <a key={link} href="#capabilities" className="px-4 py-3 rounded hover:bg-white/10 hover:text-white transition-colors">{link}</a>)}
+          <a href="#capabilities" className="ml-1 bg-white text-black rounded px-4 py-3 flex items-center gap-2 hover:bg-white/90 transition-colors">Claim a Spot <ArrowUpRight /></a>
+        </div>
+        <div className="w-12 h-12 opacity-0" />
+      </nav>;
+    };
+
+    function StatCard({ icon, value, label }) {
+      return <div className="liquid-glass rounded-[1.25rem] p-5 w-full sm:w-[220px] text-left">
+        <div className="flex items-start justify-between gap-4">
+          <div className="w-11 h-11 liquid-glass rounded-[0.75rem] flex items-center justify-center text-white/90"><Icon type={icon} /></div>
+          <div className="text-right">
+            <div className="font-heading italic text-4xl tracking-[-1px] leading-none">{value}</div>
+            <div className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/70 font-medium whitespace-nowrap">{label}</div>
+          </div>
+        </div>
+      </div>;
+    }
+
+    window.HeroSection = function HeroSection() {
+      return <section id="hero" className="relative min-h-screen overflow-hidden video-vignette flex flex-col items-center justify-center px-5 py-28">
+        <window.FadingVideo src={HERO_VIDEO} className="hero-video-size absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[120%] object-cover object-top z-0" />
+        <window.Navbar />
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center">
+          <motion.div {...fadeUp(0.4)} className="liquid-glass rounded px-4 py-2 text-xs md:text-sm font-body font-light tracking-[0.24em] uppercase text-white/80">
+            Mission window now open
+          </motion.div>
+
+          <window.BlurText
+            text="Commercial orbit for the impossibly curious"
+            className="mt-7 max-w-6xl font-heading italic text-6xl sm:text-7xl md:text-[5.5rem] lg:text-[7rem] leading-[0.82] tracking-[-4px] text-white"
+          />
+
+          <motion.p {...fadeUp(0.8)} className="mt-7 max-w-2xl text-white/90 font-body font-light text-base md:text-lg leading-tight">
+            A private spaceflight experience shaped like a mission briefing: precise training, orbital comfort, and cinematic views of home from above the atmosphere.
+          </motion.p>
+
+          <motion.div {...fadeUp(1.1)} className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-5">
+            <a href="#capabilities" className="liquid-glass-strong rounded px-7 py-4 flex items-center gap-3 text-sm uppercase tracking-[0.16em] font-medium hover:bg-white/15 transition-colors">
+              Start Your Voyage <ArrowUpRight />
+            </a>
+            <a href="#capabilities" className="rounded px-4 py-4 flex items-center gap-3 text-sm uppercase tracking-[0.16em] font-medium text-white/90 hover:text-white transition-colors">
+              <span className="liquid-glass w-10 h-10 rounded flex items-center justify-center"><PlayIcon className="w-3.5 h-3.5" /></span>
+              View Liftoff
+            </a>
+          </motion.div>
+
+          <motion.div {...fadeUp(1.3)} className="mt-12 flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+            <StatCard icon="orbit" value="17" label="Orbital Days" />
+            <StatCard icon="shield" value="99.8%" label="Flight Reliability" />
+          </motion.div>
+        </div>
+
+        <motion.div {...fadeUp(1.4)} className="relative md:absolute z-10 bottom-auto md:bottom-8 mt-12 md:mt-0 left-auto md:left-1/2 md:-translate-x-1/2 w-full max-w-6xl px-5 flex flex-col md:flex-row items-center justify-center gap-7 md:gap-12">
+          <span className="liquid-glass rounded px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-white/75 whitespace-nowrap">Trusted mission partners</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 md:gap-x-16 gap-y-4 font-heading italic text-2xl md:text-3xl text-white/90">
+            <span>Nova</span><span>Kepler</span><span>Vega</span><span>Orion</span><span>Atlas</span>
+          </div>
+        </motion.div>
+      </section>;
+    };
+
+    function useInViewOnce(threshold = 0.15) {
+      const ref = useRef(null);
+      const [visible, setVisible] = useState(false);
+      useEffect(() => {
+        const node = ref.current;
+        if (!node) return;
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        }, { threshold });
+        observer.observe(node);
+        return () => observer.disconnect();
+      }, [threshold]);
+      return [ref, visible];
+    }
+
+    function CapabilityCard({ index, icon, tags, title, body, visible }) {
+      return <motion.article
+        className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col"
+        initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+        animate={visible ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+        transition={{ duration: 0.75, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="liquid-glass rounded-[0.75rem] w-11 h-11 flex shrink-0 items-center justify-center text-white/90"><Icon type={icon} className="w-5 h-5" /></div>
+          <div className="flex flex-wrap justify-end gap-2">
+            {tags.map(tag => <span key={tag} className="liquid-glass rounded px-3 py-1.5 text-[11px] uppercase tracking-[0.13em] font-medium text-white/80 whitespace-nowrap">{tag}</span>)}
+          </div>
+        </div>
+        <div className="flex-1" />
+        <div>
+          <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] leading-none">{title}</h3>
+          <p className="mt-4 font-body font-light text-sm md:text-base leading-tight text-white/85">{body}</p>
+        </div>
+      </motion.article>;
+    }
+
+    window.CapabilitiesSection = function CapabilitiesSection() {
+      const [ref, visible] = useInViewOnce(0.16);
+      const cards = [
+        {
+          icon: 'capsule',
+          tags: ['Crew', 'Training', 'Cabin', 'Medical'],
+          title: 'Human-rated ascent',
+          body: 'A complete preparation sequence for private astronauts, from vestibular adaptation to suit fitting and cabin rehearsals inside a controlled mission environment.'
+        },
+        {
+          icon: 'signal',
+          tags: ['Telemetry', 'Comms', 'Guidance', 'Ops'],
+          title: 'Mission-grade systems',
+          body: 'Continuous telemetry, redundant communications, and ground support designed to make the entire voyage feel calm, guided, and deeply considered.'
+        },
+        {
+          icon: 'terrain',
+          tags: ['Views', 'Orbit', 'Docking', 'Return'],
+          title: 'Orbital perspective',
+          body: 'Precision windows, quiet observation periods, and curated orbital arcs create an encounter with Earth that feels both technical and transcendent.'
+        }
+      ];
+
+      return <section id="capabilities" className="relative min-h-screen overflow-hidden video-vignette px-5 md:px-10 lg:px-16 py-28 flex items-center">
+        <window.FadingVideo src={CAP_VIDEO} className="absolute inset-0 w-full h-full object-cover z-0" />
+        <div ref={ref} className="relative z-10 w-full max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
+            animate={visible ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="font-body text-sm font-light text-white/80 tracking-[0.18em] uppercase">// Capabilities</div>
+            <h2 className="mt-5 font-heading italic text-6xl md:text-[6rem] tracking-[-3px] leading-[0.9] whitespace-pre-line">Production{`\n`}evolved</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+            {cards.map((card, i) => <CapabilityCard key={card.title} {...card} index={i} visible={visible} />)}
+          </div>
+        </div>
+      </section>;
+    };
+
+    window.App = function App() {
+      return <main className="bg-black text-white">
+        <window.HeroSection />
+        <window.CapabilitiesSection />
+      </main>;
+    };
+
+    document.getElementById('static-fallback')?.remove();
+    ReactDOM.createRoot(document.getElementById('root')).render(<window.App />);
+  </script>
+</body>
+</html>
